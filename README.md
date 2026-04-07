@@ -1,15 +1,6 @@
 # 📡 Network System Note 
 
-> 计算机网络秋招面试复习笔记 | 中科大郑烇/杨坚视频课程 + Kurose实验
-
----
-
-## 📑 目录
-
-- [关于本仓库](#-关于本仓库)
-- [仓库结构](#-仓库结构)
-- [资源链接](#-资源链接)
-- [章节导航](#-章节导航)
+> 计算机网络秋招面试复习笔记 
 
 ---
 
@@ -33,6 +24,23 @@
 - 需要系统复习计算机网络的学生
 - 希望通过实验加深理解的学习者
 
+</details>
+
+---
+
+<details open>
+<summary><h2>🧭 章节导航</h2></summary>
+
+| 章节 | 标题 | Lab |
+|------|------|-----|
+| [Chapter01](./Chapter01_Computer_Networks_overview/README.md) | 计算机网络概述 | - |
+| [Chapter02](./Chapter02-Application-Layer/) | 应用层 | Lab2-HTTP |
+| [Chapter03](./Chapter03-Transport-Layer/) | 传输层 | Lab3-TCP |
+| [Chapter04](./Chapter04-Network-Layer-Data-Plane/) | 网络层：数据平面 | - |
+| [Chapter05](./Chapter05-Network-Layer-Control-Plane/) | 网络层：控制平面 | - |
+| [Chapter06](./Chapter06-Link-Layer-and-LANs/) | 链路层和局域网 | - |
+| [Chapter07](./Chapter07-Wireless-and-Mobile-Networks/) | 无线网络和移动网络 | - |
+| [Chapter08](./Chapter08-Security-in-Computer-Networks/) | 网络安全 | - |
 </details>
 
 ---
@@ -107,17 +115,3 @@ Network-Interview-Notes/
 
 ---
 
-<details open>
-<summary><h2>🧭 章节导航</h2></summary>
-
-| 章节 | 标题 | Lab |
-|------|------|-----|
-| [Chapter01](./Chapter01-Computer-Networks-and-Internet/) | 计算机网络和因特网 | - |
-| [Chapter02](./Chapter02-Application-Layer/) | 应用层 | Lab2-HTTP |
-| [Chapter03](./Chapter03-Transport-Layer/) | 传输层 | Lab3-TCP |
-| [Chapter04](./Chapter04-Network-Layer-Data-Plane/) | 网络层：数据平面 | - |
-| [Chapter05](./Chapter05-Network-Layer-Control-Plane/) | 网络层：控制平面 | - |
-| [Chapter06](./Chapter06-Link-Layer-and-LANs/) | 链路层和局域网 | - |
-| [Chapter07](./Chapter07-Wireless-and-Mobile-Networks/) | 无线网络和移动网络 | - |
-| [Chapter08](./Chapter08-Security-in-Computer-Networks/) | 网络安全 | - |
-</details>
