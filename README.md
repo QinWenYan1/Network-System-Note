@@ -34,8 +34,8 @@
 | 章节 | 标题 | Lab |
 |------|------|-----|
 | [Chapter01](./Chapter01_Computer_Networks_overview/README.md) | 计算机网络概述 | - |
-| [Chapter02](./Chapter02_Application_Layer/README.md) | 应用层 | Lab2-HTTP |
-| [Chapter03](./Chapter03-Transport-Layer/) | 传输层 | Lab3-TCP |
+| [Chapter02](./Chapter02_Application_Layer/README.md) | 应用层 | - |
+| [Chapter03](./Chapter03_Transport_Layer/README.md) | 传输层 | - |
 | [Chapter04](./Chapter04-Network-Layer-Data-Plane/) | 网络层：数据平面 | - |
 | [Chapter05](./Chapter05-Network-Layer-Control-Plane/) | 网络层：控制平面 | - |
 | [Chapter06](./Chapter06-Link-Layer-and-LANs/) | 链路层和局域网 | - |
