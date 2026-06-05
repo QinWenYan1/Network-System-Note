@@ -9,20 +9,14 @@
 
 ### 🎯 目的
 
-系统学习计算机网络核心知识，整理面试高频考点，配合实验验证理解，为秋招技术面试做好充分准备。
+系统学习计算机网络核心知识
 
 ### 📝 内容
 
 - **理论笔记**：基于中科大视频课程和《自顶向下》教材的知识点整理
-- **实验报告**：Kurose官网Wireshark Labs的实验记录和分析
-- **面试八股**：各章节面试高频问题及答案
+
 - **原始资料**：课程PPT及标注版本
 
-### 👥 面向人群
-
-- 准备秋招/春招的后端开发求职者
-- 需要系统复习计算机网络的学生
-- 希望通过实验加深理解的学习者
 
 </details>
 
@@ -37,8 +31,8 @@
 | [Chapter02](./Chapter02_Application_Layer/README.md) | 应用层 | - |
 | [Chapter03](./Chapter03_Transport_Layer/README.md) | 传输层 | - |
 | [Chapter04](./Chapter04_Network_Layer_data_plane%20/README.md) | 网络层：数据平面 | - |
-| [Chapter05](./Chapter05-Network-Layer-Control-Plane/) | 网络层：控制平面 | - |
-| [Chapter06](./Chapter06-Link-Layer-and-LANs/) | 链路层和局域网 | - |
+| [Chapter05](./Chapter05_Network_Layer_Control_Plane/README.md) | 网络层：控制平面 | - |
+| [Chapter06](./Chapter06_Link_Layer/README.md) | 链路层和局域网 | - |
 | [Chapter07](./Chapter07-Wireless-and-Mobile-Networks/) | 无线网络和移动网络 | - |
 | [Chapter08](./Chapter08-Security-in-Computer-Networks/) | 网络安全 | - |
 </details>
