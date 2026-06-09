@@ -1,119 +1,91 @@
 # 第3章 传输层 (Transport Layer)
 
-> **章节定位**：传输层是网络协议栈的核心层次，负责端到端的可靠/不可靠数据传输。本章从传输层服务概述出发，深入讲解多路复用、UDP、可靠数据传输原理、TCP协议及拥塞控制机制。
+> **章节定位**：传输层是网络协议栈的核心层次，负责端到端的可靠/不可靠数据传输。从传输层服务概述出发，深入讲解多路复用、UDP、可靠数据传输原理、TCP协议及拥塞控制机制，为理解网络层和应用层之间的关键桥梁。
 
 ---
 
-## 📋 章节导航
+## 📋 章节导航与重难点
 
-| 小节 | 内容 | 笔记链接 |
-|:---:|:---|:---:|
-| **3.1** | 概述和传输层服务 (Overview and Transport Layer Services) | [笔记](./3.1_Transport_Layer_Overview.md) |
-| **3.2** | 多路复用与解复用 (Multiplexing and Demultiplexing) | [笔记](./3.2_Multiplexing_and_Demultiplexing.md) |
-| **3.3** | 无连接传输：UDP (Connectionless Transport: UDP) | [笔记](./3.3_UDP_User_Datagram_Protocol.md) |
-| **3.4** | 可靠数据传输的原理 (Principles of Reliable Data Transfer) | [笔记](./3.4_Principles_of_Reliable_Data_Transfer.md) |
-| **3.5** | 面向连接的传输：TCP (Connection-Oriented Transport: TCP) | [笔记](./3.5_TCP_Connection_Oriented_Transport.md) |
-| **3.6** | 拥塞控制原理 (Principles of Congestion Control) | [笔记](./3.6_Principles_of_Congestion_Control.md) |
-| **3.7** | TCP 拥塞控制 (TCP Congestion Control) | [笔记](./3.7_TCP_Congestion_Control.md) |
+### 3.1 [概述和传输层服务](./3.1_Transport_Layer_Overview.md)
+- **核心**：
+  - `传输层服务模型`——提供应用进程间的逻辑通信，与网络层主机到主机通信区分
+  - `TCP` vs `UDP` 两大协议——面向连接可靠传输 vs 无连接不可靠传输
+  - 传输层在协议栈中的位置——网络层之上，应用层之下
+- **难点**：
+  - 理解传输层"端到端"与网络层"主机到主机"的边界——传输层只关心进程到进程，不处理路由
+  - TCP 和 UDP 的适用场景选择——何时用可靠、何时用低开销
 
----
+### 3.2 [多路复用与解复用](./3.2_Multiplexing_and_Demultiplexing.md)
+- **核心**：
+  - `端口(Port)`——传输层的 SAP(Service Access Point)，16位标识应用进程
+  - `无连接的多路复用/解复用`——UDP 通过 (目的IP, 目的端口) 标识套接字
+  - `面向连接的多路复用/解复用`——TCP 通过 (源IP, 源端口, 目的IP, 目的端口) 四元组标识套接字
+- **难点**：
+  - 无连接 vs 面向连接的解复用标识差异——UDP 只看目的端口，TCP 需要四元组
+  - 套接字(Socket)与端口号的关系——一个端口可以对应多个套接字（TCP 中）
 
-## 🎯 核心概念速览
+### 3.3 [无连接传输：UDP](./3.3_UDP_User_Datagram_Protocol.md)
+- **核心**：
+  - `UDP 报文格式`——8字节头部（源端口、目的端口、长度、校验和）+ 数据
+  - `校验和(Checksum)`——覆盖头部、数据和伪头部的差错检测机制
+  - UDP 特点——无连接、无可靠性保证、无拥塞控制、低延迟、开销小
+- **难点**：
+  - UDP 校验和的计算方式——包括 `伪头部(Pseudo Header)`（IP 源/目的地址 + 协议 + UDP长度）的构造
+  - UDP 无拥塞控制对网络的影响——可能因无节制发送导致网络拥塞
 
-### 传输层两大协议
-- **TCP** (Transmission Control Protocol) — 面向连接、可靠传输、流量控制、拥塞控制
-- **UDP** (User Datagram Protocol) — 无连接、不可靠、低开销、无拥塞控制
+### 3.4 [可靠数据传输的原理](./3.4_Principles_of_Reliable_Data_Transfer.md)
+- **核心**：
+  - `rdt 状态机演变`——rdt 1.0（理想信道）→ rdt 2.0（比特差错，停等+ACK/NAK）→ rdt 2.1（ACK/NAK 出错）→ rdt 2.2（无 NAK，只用 ACK）→ rdt 3.0（比特差错+丢包，超时重传）
+  - `流水线(Pipelining)`——允许发送方连续发送多个分组而不等待确认，提高信道利用率
+  - `GBN(Go-Back-N)`——累积确认，窗口内出错则回退重传全部未确认分组
+  - `SR(Selective Repeat)`——独立确认，只重传出错分组，接收方缓存失序分组
+- **难点**：
+  - rdt 各版本演进逻辑——为什么从 NAK 到无 NAK（rdt 2.2），为什么引入超时（rdt 3.0）
+  - GBN 与 SR 的对比——发送窗口/接收窗口大小、缓存需求、确认机制差异
+  - 发送窗口与接收窗口的互动过程——窗口大小如何影响协议效率和复杂度
 
-### 关键机制
-| 机制 | 作用 |
-|------|------|
-| 多路复用/解复用 (Multiplexing/Demultiplexing) | 将多个应用的数据流整合到同一传输层通道，并在接收端正确分发给对应应用 |
-| 可靠数据传输 (rdt) | 通过校验和、确认、重传、序号等机制在不可靠信道上实现可靠传输 |
-| 流水线 (Pipelining) | 允许发送方连续发送多个分组而不等待确认，提高信道利用率 |
-| 滑动窗口 (Sliding Window) | 控制发送/接收的分组范围，实现流量控制和可靠传输 |
-| 拥塞控制 (Congestion Control) | 防止过多数据注入网络导致性能下降，TCP采用AIMD、慢启动等机制 |
+### 3.5 [面向连接的传输：TCP](./3.5_TCP_Connection_Oriented_Transport.md)
+- **核心**：
+  - `TCP 报文段格式`——序号(Sequence Number)、确认号(Acknowledgment Number)、头部标志位（SYN, ACK, FIN, RST）
+  - `三次握手`——SYN → SYN+ACK → ACK，建立连接
+  - `四次挥手`——对称连接释放，TIME_WAIT 状态确保可靠关闭
+  - `流量控制(Flow Control)`——滑动窗口机制，接收窗口(rwnd)限制发送方
+  - `快速重传(Fast Retransmit)`——收到3个重复 ACK 立即重传，不必等待超时
+- **难点**：
+  - 序号和确认号的含义——序号是字节流偏移量，确认号是期望收到的下一个字节序号
+  - TIME_WAIT 状态的作用——防止旧连接的延迟分组干扰新连接，确保最后的 ACK 被收到
+  - 流量控制 vs 拥塞控制——前者是接收方缓存限制，后者是网络容量限制，容易混淆
 
+### 3.6 [拥塞控制原理](./3.6_Principles_of_Congestion_Control.md)
+- **核心**：
+  - `拥塞(Congestion)`——过多数据注入网络导致性能下降、丢包、延迟增加
+  - `网络辅助的拥塞控制`——网络设备（路由器）向发送方反馈拥塞信息（如 ATM 的 RM 信元）
+  - `端到端的拥塞控制`——发送方根据观察到的丢包/延迟自行推断拥塞（TCP 采用此方式）
+- **难点**：
+  - 两种拥塞控制范式的区别——网络辅助需要网络设备支持，端到端不需要但反应慢
+  - 拥塞控制与流量控制的区分——前者是网络全局问题，后者是接收方局部问题
 
----
-
-## 📝 PPT 章节总结
-
-### 一、传输层提供的服务
-- **应用进程间的逻辑通信**
-  - Vs 网络层提供的是**主机到主机**的通信服务
-- **互联网上传输层协议**：UDP、TCP
-  - 特性对比（见上表）
-
-### 二、多路复用和解复用
-- **端口**：传输层的 SAP（Service Access Point，服务访问点）
-- **无连接**的多路复用和解复用
-- **面向连接**的多路复用和解复用
-
-### 三、实例1：无连接传输层协议 — UDP
-- 多路复用解复用
-- UDP 报文格式
-- 检错机制：**校验和 (Checksum)**
-
-### 四、可靠数据传输原理
-- **问题描述**：如何在不可靠信道上实现可靠传输
-- **停止等待协议**：
-  - rdt 1.0 → 理想可靠信道
-  - rdt 2.0 → 比特差错信道（停等 + ACK/NAK）
-  - rdt 2.1 → ACK/NAK 也可能出错
-  - rdt 2.2 → 无 NAK 的协议（只用 ACK）
-  - rdt 3.0 → 比特差错 + 丢包信道（引入超时重传）
-- **流水线协议**：
-  - GBN（Go-Back-N，回退N帧）
-  - SR（Selective Repeat，选择重传）
-
-### 五、实例2：面向连接的传输层协议 — TCP
-- **概述**：TCP 特性（面向连接、可靠、字节流）
-- **报文段格式**
-  - 序号 (Sequence Number)、确认号 (Acknowledgment Number)
-  - 超时机制及时间（RTT 估计）
-- **TCP 可靠传输机制**
-- **重传、快速重传 (Fast Retransmit)**
-- **流量控制 (Flow Control)**：滑动窗口
-- **连接管理**
-  - **三次握手**（建立连接：SYN → SYN-ACK → ACK）
-  - **对称连接释放**（四次挥手 + TIME_WAIT）
-
-### 六、拥塞控制原理
-- **网络辅助的拥塞控制**
-- **端到端的拥塞控制**
-
-### 七、TCP 的拥塞控制
-- **AIMD**（Additive Increase Multiplicative Decrease，加性增乘性减）
-- **慢启动 (Slow Start)**
-- **超时之后的保守策略**
+### 3.7 [TCP 拥塞控制](./3.7_TCP_Congestion_Control.md)
+- **核心**：
+  - `AIMD(Additive Increase Multiplicative Decrease)`——线性增大拥塞窗口，发生拥塞时乘性减小
+  - `慢启动(Slow Start)`——初始 cwnd=1 MSS，每收到一个 ACK 窗口加倍，指数增长
+  - `拥塞避免(Congestion Avoidance)`——达到慢启动阈值(ssthresh)后改为线性增长
+  - `快速恢复(Fast Recovery)`——收到3个重复 ACK 时，cwnd 减半而非降到1，进入拥塞避免
+  - `超时之后的保守策略`——超时后将 ssthresh 设为 cwnd/2，cwnd 重置为 1 MSS，重新慢启动
+- **难点**：
+  - AIMD 动态行为——窗口随时间变化的锯齿状曲线，理解加性增和乘性减的收敛性
+  - 慢启动阈值(ssthresh)的变化逻辑——3个重复 ACK vs 超时事件对 ssthresh 的不同影响
+  - 拥塞窗口(cwnd)与接收窗口(rwnd)的协作——发送窗口 = min(cwnd, rwnd)，取两者较小值
 
 ---
 
-## 📚 重点难点标记
+## 🔮 第3章展望
 
-🔴 **核心重点**
-- rdt 状态机演变：rdt1.0 → rdt2.0 → rdt2.1 → rdt2.2 → rdt3.0
-- 滑动窗口协议：GBN (Go-Back-N) vs SR (Selective Repeat)
-- TCP 序号与确认号机制
-- TCP 拥塞控制：慢启动、拥塞避免、快速恢复
-
-🟡 **理解难点**
-- 发送窗口 vs 接收窗口的互动过程
-- GBN 与 SR 在异常情况下的差异
-- TCP 往返时间 (RTT) 估计与超时设置
-- AIMD 拥塞控制算法的动态行为
+**下一章（第4章）**：
+- 离开网络"边缘"（应用层和传输层），深入到网络的"核心"
+- 网络层的 `数据平面(Data Plane)`——路由器如何转发分组
+- 网络层协议：`IP`、`NAT`、`IPv6`，以及 `SDN` 通用转发机制
 
 ---
 
-## 🔮 第三章展望
-
-**下一章**：
-- 离开网络 **"边缘"**（应用层和传输层）
-- 深入到网络的 **"核心"**
-- **2 个关于网络层的章节**：
-  - 数据平面 (Data Plane)
-  - 控制平面 (Control Plane)
-
----
-
-> 🔗 **返回根目录**：[Network System Note](../README.md)
+> 🔗 **返回根目录**：[Course Notes Root](../README.md)

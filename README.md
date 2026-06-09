@@ -33,8 +33,8 @@
 | [Chapter04](./Chapter04_Network_Layer_data_plane%20/README.md) | 网络层：数据平面 | - |
 | [Chapter05](./Chapter05_Network_Layer_Control_Plane/README.md) | 网络层：控制平面 | - |
 | [Chapter06](./Chapter06_Link_Layer/README.md) | 链路层和局域网 | - |
-| [Chapter07](./Chapter07-Wireless-and-Mobile-Networks/) | 无线网络和移动网络 | - |
-| [Chapter08](./Chapter08-Security-in-Computer-Networks/) | 网络安全 | - |
+| - | - | - |
+| [Chapter08](./Chapter08_Network_Security/README.md) | 网络安全 | - |
 </details>
 
 ---
